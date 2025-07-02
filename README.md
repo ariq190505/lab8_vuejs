@@ -1,24 +1,35 @@
-🧪 Praktikum Pemrograman Website 2 - VueJS Manual
-👤 Profil Mahasiswa
+# 🧪 Praktikum Pemrograman Website 2 - VueJS Manual
+
+## 👤 Profil Mahasiswa
+
 | Atribut      | Keterangan            |
 |--------------|-----------------------|
 | Nama         | Ariq Ibtihal          |
 | NIM          | 312310446             |
 | Kelas        | TI.23.A.5             |
 | Mata Kuliah  | Pemrograman Website 2 |
-📋 Deskripsi
+
+## 📋 Deskripsi
+
 Praktikum ini membahas cara penggunaan VueJS secara manual (tanpa NPM) menggunakan CDN, serta integrasi dengan Axios untuk melakukan call ke REST API. Fitur-fitur yang dibuat:
 
-Menampilkan data artikel
-Menambah data
-Mengubah data
-Menghapus data
-🔧 Library yang Digunakan
-VueJS
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-📄 File: index.html
-Berikut adalah kode HTML utama untuk menampilkan daftar artikel dan form tambah/ubah menggunakan VueJS dan Axios via CDN.
+- Menampilkan data artikel
+- Menambah data
+- Mengubah data
+- Menghapus data
 
+## 🔧 Library yang Digunakan
+
+- **VueJS**: `<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>`
+- **Axios**: `<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>`
+
+---
+
+## 📄 File: `index.html`
+
+Berikut adalah kode HTML utama untuk menampilkan daftar artikel dan form tambah/ubah.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,11 +77,21 @@ Berikut adalah kode HTML utama untuk menampilkan daftar artikel dan form tambah/
   <script src="assets/js/app.js"></script>
 </body>
 </html>
-📄 File: assets/js/app.js
-Berikut adalah kode JavaScript utama menggunakan Vue 3 dan Axios, untuk mengatur data artikel melalui REST API.
+```
 
+### 📸 Hasil Output `index.html`
+
+![Hasil Output](https://via.placeholder.com/600x400.png?text=Tampilan+Aplikasi)
+
+---
+
+## 📄 File: `assets/js/app.js`
+
+Berikut adalah kode JavaScript utama menggunakan Vue 3 dan Axios.
+
+```javascript
 const { createApp } = Vue
-const apiUrl = 'http://localhost/labci4/public' // Ganti dengan URL API kamu
+const apiUrl = 'http://localhost/webperaktikum2/ci4/public' // Sesuaikan dengan URL API Anda
 
 createApp({
   data() {
@@ -90,28 +111,20 @@ createApp({
     loadData() {
       axios.get(apiUrl + '/post')
         .then(response => {
-          this.artikel = response.data
+          this.artikel = response.data.artikel || []
         })
-        .catch(error => console.error(error))
+        .catch(error => console.error('Error loading data:', error))
     },
     submitForm() {
-      if (this.form.id) {
-        // Edit data
-        axios.put(`${apiUrl}/post/${this.form.id}`, this.form)
-          .then(() => {
-            this.loadData()
-            this.resetForm()
-          })
-          .catch(error => console.error(error))
-      } else {
-        // Tambah data
-        axios.post(apiUrl + '/post', this.form)
-          .then(() => {
-            this.loadData()
-            this.resetForm()
-          })
-          .catch(error => console.error(error))
-      }
+      const url = this.form.id ? `${apiUrl}/post/${this.form.id}` : `${apiUrl}/post`;
+      const method = this.form.id ? 'put' : 'post';
+
+      axios[method](url, this.form)
+        .then(() => {
+          this.loadData()
+          this.resetForm()
+        })
+        .catch(error => console.error('Error saving data:', error))
     },
     editData(item) {
       this.form = { ...item }
@@ -122,7 +135,7 @@ createApp({
           .then(() => {
             this.loadData()
           })
-          .catch(error => console.error(error))
+          .catch(error => console.error('Error deleting data:', error))
       }
     },
     resetForm() {
@@ -134,39 +147,59 @@ createApp({
     }
   }
 }).mount('#app')
-📸 Hasil Output
-![Hasil Output](https://via.placeholder.com/600x400.png?text=Hasil+Output)
+```
 
-🎨 File: assets/css/style.css
-File ini berisi styling dasar untuk tampilan aplikasi artikel VueJS. Gaya yang digunakan bersifat minimalis dan responsif.
+---
 
+## 🎨 File: `assets/css/style.css`
+
+File ini berisi styling dasar untuk tampilan aplikasi.
+
+```css
 body {
   font-family: Arial, sans-serif;
   margin: 20px;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+#app {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 form {
   margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
 }
 
 input, textarea {
   display: block;
   margin-bottom: 10px;
-  width: 100%;
+  width: calc(100% - 16px);
   padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 button {
-  padding: 8px 12px;
+  padding: 10px 15px;
   margin-right: 5px;
-  background-color: #4CAF50;
+  background-color: #007BFF;
   color: white;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #0056b3;
 }
 
 table {
@@ -180,8 +213,15 @@ table, th, td {
 }
 
 th, td {
-  padding: 10px;
+  padding: 12px;
   text-align: left;
 }
-📸 Hasil Output
-![Hasil Output](https://via.placeholder.com/600x400.png?text=Hasil+Output)
+
+th {
+  background-color: #f8f8f8;
+}
+```
+
+### 📸 Hasil Output `style.css`
+
+![Hasil Output](https://via.placeholder.com/600x400.png?text=Tampilan+Aplikasi+dengan+CSS)
