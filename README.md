@@ -81,7 +81,9 @@ Berikut adalah kode HTML utama untuk menampilkan daftar artikel dan form tambah/
 
 ### 📸 Hasil Output `index.html`
 
-![Hasil Output](https://via.placeholder.com/600x400.png?text=Tampilan+Aplikasi)
+![Hasil Output]
+![Screenshot 2025-07-02 213718](https://github.com/user-attachments/assets/1bbf863e-2af1-4a01-8d54-23f0ff16fdd4)
+
 
 ---
 
@@ -224,4 +226,6 @@ th {
 
 ### 📸 Hasil Output `style.css`
 
-![Hasil Output](https://via.placeholder.com/600x400.png?text=Tampilan+Aplikasi+dengan+CSS)
+![Hasil Output]
+![Screenshot 2025-07-02 215156](https://github.com/user-attachments/assets/342746c6-39ef-41ac-9863-2c4a96824b28)
+
