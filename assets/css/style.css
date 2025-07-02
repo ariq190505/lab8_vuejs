@@ -1,0 +1,228 @@
+body {
+  font-family: sans-serif;
+  background-color: #eaeaea;
+}
+#app {
+  margin: 50px auto;
+  width: 900px;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+h1 {
+  margin-bottom: 20px;
+}
+#btn-tambah {
+  margin-bottom: 15px;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #3152d6;
+  color: #ffffff;
+  border: 1px solid #3152d6;
+  font-weight: bold;
+}
+/* Table Container with Scroll */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background: white;
+}
+
+table {
+  width: 100%;
+  min-width: 700px; /* Minimum width untuk scroll */
+  border-collapse: collapse;
+}
+th {
+  background-color: #5778ff;
+  color: white;
+  padding: 10px;
+}
+td {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+.center-text {
+  text-align: center;
+}
+td a {
+  color: #3152d6;
+  margin: 0 5px;
+  text-decoration: none;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  z-index: 999;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  width: 600px;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+.close {
+  position: absolute;
+  top: 10px; right: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+}
+.close:hover {
+  color: #000;
+}
+form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+#btnSimpan {
+  background-color: #3152d6;
+  color: white;
+  border: 1px solid #3152d6;
+  padding: 10px 20px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+form button {
+  padding: 10px 20px;
+  margin-top: 10px;
+}
+
+/* Image Styles - Super Specific untuk Table */
+table .table-image,
+table td .table-image,
+tbody td .table-image,
+tr td .table-image,
+img.table-image {
+  width: 20px !important;
+  height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  object-fit: cover !important;
+  border-radius: 3px !important;
+  border: 1px solid #ddd !important;
+  display: block !important;
+}
+
+/* Force small image size in ANY table */
+table img,
+td img,
+tbody img,
+tr img {
+  max-width: 20px !important;
+  max-height: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  object-fit: cover !important;
+}
+
+.no-image {
+  color: #999;
+  font-style: italic;
+  font-size: 12px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.file-info {
+  display: block;
+  color: #666;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.image-preview {
+  position: relative;
+  display: inline-block;
+  margin: 10px 0;
+}
+
+.image-preview img {
+  max-width: 80px !important;
+  max-height: 80px !important;
+  border-radius: 4px;
+  border: 2px solid #ddd;
+}
+
+.existing-image {
+  margin: 10px 0;
+}
+
+.existing-image label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.existing-image img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 4px;
+  border: 2px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.remove-image {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.existing-image .remove-image {
+  position: static;
+  border-radius: 4px;
+  width: auto;
+  height: auto;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.remove-image:hover {
+  background: #cc0000;
+}
+
+#btnSimpan:disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Startup Check - Vue.js + CodeIgniter</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .check-item { 
+            margin: 15px 0; 
+            padding: 15px; 
+            border-radius: 8px; 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .success { background-color: rgba(40, 167, 69, 0.3); border-left: 4px solid #28a745; }
+        .error { background-color: rgba(220, 53, 69, 0.3); border-left: 4px solid #dc3545; }
+        .warning { background-color: rgba(255, 193, 7, 0.3); border-left: 4px solid #ffc107; }
+        .info { background-color: rgba(23, 162, 184, 0.3); border-left: 4px solid #17a2b8; }
+        
+        .status { font-weight: bold; font-size: 18px; }
+        .details { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+        
+        button { 
+            padding: 12px 24px; 
+            margin: 10px 5px; 
+            cursor: pointer; 
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        
+        button:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        
+        h1 { text-align: center; margin-bottom: 30px; }
+        .loading { 
+            display: inline-block; 
+            width: 20px; 
+            height: 20px; 
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Startup System Check</h1>
+        
+        <div id="checks"></div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn-primary" onclick="runAllChecks()">🔄 Run All Checks</button>
+            <button class="btn-success" onclick="openMainApp()">🚀 Open Main App</button>
+            <button class="btn-danger" onclick="clearResults()">🗑️ Clear Results</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const checksDiv = document.getElementById('checks')
+        
+        const apiUrls = [
+            'http://localhost/ci4/public',
+            'http://127.0.0.1/ci4/public',
+            'http://localhost:8080/public',
+            'http://localhost/ci4/public/index.php'
+        ]
+        
+        function addCheck(title, status, details = '', type = 'info') {
+            const div = document.createElement('div')
+            div.className = `check-item ${type}`
+            div.innerHTML = `
+                <div>
+                    <div class="status">${getStatusIcon(type)} ${title}</div>
+                    <div class="details">${details}</div>
+                </div>
+                <div class="status">${status}</div>
+            `
+            checksDiv.appendChild(div)
+        }
+        
+        function getStatusIcon(type) {
+            switch(type) {
+                case 'success': return '✅'
+                case 'error': return '❌'
+                case 'warning': return '⚠️'
+                default: return 'ℹ️'
+            }
+        }
+        
+        function clearResults() {
+            checksDiv.innerHTML = ''
+        }
+        
+        async function checkLibraries() {
+            addCheck('Checking JavaScript Libraries', '<div class="loading"></div>', 'Verifying Vue.js and Axios...', 'info')
+            
+            await new Promise(resolve => setTimeout(resolve, 500))
+            
+            if (typeof Vue !== 'undefined') {
+                addCheck('Vue.js Library', 'LOADED', 'Vue.js 3 is available', 'success')
+            } else {
+                addCheck('Vue.js Library', 'MISSING', 'Vue.js not found - check CDN connection', 'error')
+            }
+            
+            if (typeof axios !== 'undefined') {
+                addCheck('Axios Library', 'LOADED', 'HTTP client is available', 'success')
+            } else {
+                addCheck('Axios Library', 'MISSING', 'Axios not found - check CDN connection', 'error')
+            }
+        }
+        
+        async function checkApiConnections() {
+            addCheck('Testing API Connections', '<div class="loading"></div>', 'Testing multiple API endpoints...', 'info')
+            
+            let workingUrl = null
+            
+            for (const url of apiUrls) {
+                try {
+                    addCheck(`Testing ${url}`, '<div class="loading"></div>', 'Connecting...', 'info')
+                    
+                    const response = await fetch(`${url}/post`, {
+                        method: 'GET',
+                        mode: 'cors',
+                        headers: { 'Accept': 'application/json' }
+                    })
+                    
+                    if (response.ok) {
+                        const data = await response.json()
+                        workingUrl = url
+                        addCheck(`API Connection: ${url}`, 'SUCCESS', `Status: ${response.status} | Articles: ${data.artikel?.length || 0}`, 'success')
+                        break
+                    } else {
+                        addCheck(`API Connection: ${url}`, 'FAILED', `HTTP ${response.status}: ${response.statusText}`, 'error')
+                    }
+                } catch (error) {
+                    addCheck(`API Connection: ${url}`, 'FAILED', `Error: ${error.message}`, 'error')
+                }
+            }
+            
+            if (workingUrl) {
+                addCheck('API Status', 'CONNECTED', `Working URL: ${workingUrl}`, 'success')
+            } else {
+                addCheck('API Status', 'DISCONNECTED', 'No working API endpoint found', 'error')
+                addCheck('Troubleshooting', 'HELP NEEDED', 'Check: 1) XAMPP Apache running 2) CodeIgniter installed 3) Database configured', 'warning')
+            }
+            
+            return workingUrl
+        }
+        
+        async function checkDatabase() {
+            addCheck('Database Check', '<div class="loading"></div>', 'Verifying database connection...', 'info')
+            
+            // This would require a specific endpoint to check DB
+            // For now, we'll assume if API works, DB works
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            addCheck('Database Status', 'ASSUMED OK', 'If API works, database should be connected', 'warning')
+        }
+        
+        async function runAllChecks() {
+            clearResults()
+            addCheck('System Check Started', 'RUNNING', new Date().toLocaleString(), 'info')
+            
+            await checkLibraries()
+            const workingApi = await checkApiConnections()
+            await checkDatabase()
+            
+            addCheck('System Check Complete', 'FINISHED', 'All checks completed', workingApi ? 'success' : 'error')
+            
+            if (workingApi) {
+                addCheck('Ready to Launch', '🚀 GO!', 'System is ready for use', 'success')
+            } else {
+                addCheck('System Issues', '⚠️ ISSUES', 'Please fix the issues above before proceeding', 'error')
+            }
+        }
+        
+        function openMainApp() {
+            window.open('index.html', '_blank')
+        }
+        
+        // Auto-run checks on page load
+        window.onload = function() {
+            setTimeout(runAllChecks, 500)
+        }
+    </script>
+</body>
+</html>

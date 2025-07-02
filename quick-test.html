@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .result { margin: 10px 0; padding: 15px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 12px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; font-size: 12px; }
+        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Quick API Test</h1>
+        <p>Test koneksi ke CodeIgniter API dengan cepat</p>
+        
+        <div>
+            <button onclick="testAPI()">🔍 Test API</button>
+            <button onclick="testPost()">📝 Test POST</button>
+            <button onclick="clearResults()">🗑️ Clear</button>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const apiUrl = 'http://localhost/ci4/public'
+        const resultsDiv = document.getElementById('results')
+        
+        function addResult(message, type = 'info', data = null) {
+            const div = document.createElement('div')
+            div.className = `result ${type}`
+            div.innerHTML = message + (data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : '')
+            resultsDiv.appendChild(div)
+            div.scrollIntoView({ behavior: 'smooth' })
+        }
+        
+        function clearResults() {
+            resultsDiv.innerHTML = ''
+        }
+        
+        async function testAPI() {
+            clearResults()
+            addResult('🔍 Testing API connection...', 'info')
+            
+            try {
+                const response = await axios.get(apiUrl + '/post', {
+                    timeout: 10000
+                })
+                
+                console.log('API Response:', response.data)
+                
+                if (response.data.error === 'Database tidak terhubung') {
+                    addResult('⚠️ Database MySQL tidak running!', 'warning')
+                    addResult('📋 Langkah-langkah perbaikan:', 'info')
+                    addResult(response.data.troubleshoot.join('<br>'), 'warning')
+                } else {
+                    addResult('✅ API connection successful!', 'success')
+                    addResult(`📊 Found ${response.data.artikel.length} articles`, 'info', response.data.artikel.slice(0, 3))
+                }
+                
+            } catch (error) {
+                console.error('API Error:', error)
+                
+                if (error.response) {
+                    addResult(`❌ Server Error: ${error.response.status}`, 'error', error.response.data)
+                } else if (error.request) {
+                    addResult('❌ Network Error: Cannot connect to server', 'error')
+                    addResult('🔧 Troubleshooting:<br>1. Check if XAMPP Apache is running<br>2. Check URL: ' + apiUrl, 'warning')
+                } else {
+                    addResult(`❌ Error: ${error.message}`, 'error')
+                }
+            }
+        }
+        
+        async function testPost() {
+            addResult('📝 Testing POST request...', 'info')
+            
+            const formData = new FormData()
+            formData.append('judul', 'Test Article ' + Date.now())
+            formData.append('isi', 'This is a test article from quick test')
+            formData.append('status', '0')
+            
+            try {
+                const response = await axios.post(apiUrl + '/post', formData, {
+                    timeout: 15000
+                })
+                
+                console.log('POST Response:', response.data)
+                
+                if (response.data.error === 'Database tidak terhubung') {
+                    addResult('⚠️ Cannot save: MySQL not running!', 'warning')
+                    addResult('📋 Fix MySQL first, then try again', 'info')
+                } else if (response.data.status === 201 || response.data.messages?.success) {
+                    addResult('✅ Article saved successfully!', 'success', response.data)
+                } else {
+                    addResult('❌ Save failed', 'error', response.data)
+                }
+                
+            } catch (error) {
+                console.error('POST Error:', error)
+                
+                if (error.response) {
+                    addResult(`❌ POST Error: ${error.response.status}`, 'error', error.response.data)
+                } else {
+                    addResult(`❌ POST Error: ${error.message}`, 'error')
+                }
+            }
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(testAPI, 1000)
+        }
+    </script>
+</body>
+</html>

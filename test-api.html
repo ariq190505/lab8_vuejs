@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Test API Connection</h1>
+    <button onclick="testGetArticles()">Test GET Articles</button>
+    <button onclick="testPostArticle()">Test POST Article</button>
+    <div id="result"></div>
+
+    <script>
+        const apiUrl = 'http://localhost/ci4/public'
+        
+        function testGetArticles() {
+            console.log('Testing GET /post...')
+            axios.get(apiUrl + '/post')
+                .then(response => {
+                    console.log('GET Success:', response.data)
+                    document.getElementById('result').innerHTML = 
+                        '<h3>GET Success:</h3><pre>' + JSON.stringify(response.data, null, 2) + '</pre>'
+                })
+                .catch(error => {
+                    console.error('GET Error:', error)
+                    document.getElementById('result').innerHTML = 
+                        '<h3>GET Error:</h3><pre>' + JSON.stringify(error.response?.data || error.message, null, 2) + '</pre>'
+                })
+        }
+        
+        function testPostArticle() {
+            console.log('Testing POST /post...')
+            const formData = new FormData()
+            formData.append('judul', 'Test Article ' + Date.now())
+            formData.append('isi', 'This is a test article content')
+            formData.append('status', '0')
+            
+            axios.post(apiUrl + '/post', formData)
+                .then(response => {
+                    console.log('POST Success:', response.data)
+                    document.getElementById('result').innerHTML = 
+                        '<h3>POST Success:</h3><pre>' + JSON.stringify(response.data, null, 2) + '</pre>'
+                })
+                .catch(error => {
+                    console.error('POST Error:', error)
+                    document.getElementById('result').innerHTML = 
+                        '<h3>POST Error:</h3><pre>' + JSON.stringify(error.response?.data || error.message, null, 2) + '</pre>'
+                })
+        }
+    </script>
+</body>
+</html>

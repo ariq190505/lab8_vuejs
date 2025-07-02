@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Koneksi API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test Koneksi API CodeIgniter</h1>
+    
+    <div id="results"></div>
+    
+    <button onclick="testAll()">🚀 Test Semua</button>
+    <button onclick="testBasicConnection()">🌐 Test Koneksi Dasar</button>
+    <button onclick="testWithAxios()">📡 Test dengan Axios</button>
+    <button onclick="clearResults()">🗑️ Clear</button>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const apiUrl = 'http://localhost/ci4/public'
+        const resultsDiv = document.getElementById('results')
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div')
+            div.className = `test-result ${type}`
+            div.innerHTML = message
+            resultsDiv.appendChild(div)
+        }
+        
+        function clearResults() {
+            resultsDiv.innerHTML = ''
+        }
+        
+        async function testBasicConnection() {
+            addResult('🔍 Testing basic connection...', 'info')
+            
+            try {
+                const response = await fetch(apiUrl + '/post')
+                
+                if (response.ok) {
+                    const data = await response.json()
+                    addResult(`✅ Koneksi berhasil! Status: ${response.status}`, 'success')
+                    addResult(`📄 Data: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'success')
+                } else {
+                    addResult(`❌ Response error: ${response.status} - ${response.statusText}`, 'error')
+                }
+            } catch (error) {
+                addResult(`❌ Koneksi gagal: ${error.message}`, 'error')
+                addResult(`💡 Kemungkinan masalah:<br>
+                    • XAMPP Apache tidak running<br>
+                    • URL salah: ${apiUrl}<br>
+                    • CodeIgniter tidak berjalan<br>
+                    • CORS tidak dikonfigurasi`, 'error')
+            }
+        }
+        
+        async function testWithAxios() {
+            addResult('📡 Testing with Axios...', 'info')
+            
+            try {
+                const response = await axios.get(apiUrl + '/post')
+                addResult(`✅ Axios berhasil! Status: ${response.status}`, 'success')
+                addResult(`📄 Data: <pre>${JSON.stringify(response.data, null, 2)}</pre>`, 'success')
+            } catch (error) {
+                addResult(`❌ Axios error: ${error.message}`, 'error')
+                
+                if (error.response) {
+                    addResult(`📊 Response error: ${error.response.status} - ${error.response.statusText}`, 'error')
+                } else if (error.request) {
+                    addResult(`📡 Request error: Tidak ada response dari server`, 'error')
+                } else {
+                    addResult(`⚙️ Setup error: ${error.message}`, 'error')
+                }
+            }
+        }
+        
+        async function testAll() {
+            clearResults()
+            addResult('🚀 Memulai test lengkap...', 'info')
+            
+            // Test 1: Basic info
+            addResult(`🎯 Target URL: ${apiUrl}/post`, 'info')
+            addResult(`🌐 Current URL: ${window.location.href}`, 'info')
+            
+            // Test 2: Basic connection
+            await testBasicConnection()
+            
+            // Test 3: Axios
+            await testWithAxios()
+            
+            addResult('✅ Test selesai!', 'info')
+        }
+        
+        // Auto test saat halaman dimuat
+        window.onload = function() {
+            addResult('🔄 Halaman dimuat, siap untuk test...', 'info')
+        }
+    </script>
+</body>
+</html>

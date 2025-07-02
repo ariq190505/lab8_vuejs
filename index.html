@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Frontend VueJS</title>
+
+  <!-- Vue Development (ganti ke .prod.js saat production) -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <!-- Axios untuk komunikasi API -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <!-- Style -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Hindari error favicon -->
+  <link rel="icon" href="data:,">
+</head>
+<body>
+  <div id="app">
+    <h1>Daftar Artikel</h1>
+    <button id="btn-tambah" @click="tambah">Tambah Data</button>
+
+    <!-- Modal -->
+    <div class="modal" v-if="showForm">
+      <div class="modal-content">
+        <span class="close" @click="closeModal">&times;</span>
+        <form @submit.prevent="saveData" enctype="multipart/form-data">
+          <h3>{{ formTitle }}</h3>
+          <div><input type="text" v-model="formData.judul" placeholder="Judul" required /></div>
+          <div><textarea v-model="formData.isi" rows="6" placeholder="Isi Artikel" required></textarea></div>
+
+          <!-- Upload Gambar -->
+          <div class="form-group">
+            <label for="gambar">Gambar Artikel:</label>
+            <input type="file" id="gambar" ref="fileInput" @change="handleFileUpload" accept="image/*" />
+            <small class="file-info">Format: JPG, PNG, GIF. Maksimal 2MB</small>
+          </div>
+
+          <!-- Preview Gambar -->
+          <div v-if="imagePreview" class="image-preview">
+            <img :src="imagePreview" alt="Preview" />
+            <button type="button" @click="removeImage" class="remove-image">×</button>
+          </div>
+
+          <!-- Gambar Existing (saat edit) -->
+          <div v-if="formData.gambar && !imagePreview" class="existing-image">
+            <label>Gambar Saat Ini:</label>
+            <img :src="'/webperaktikum2/ci4/public/gambar/' + formData.gambar" alt="Current Image" />
+            <button type="button" @click="removeExistingImage" class="remove-image">Hapus Gambar</button>
+          </div>
+
+          <div>
+            <select v-model="formData.status">
+              <option v-for="option in statusOptions" :value="option.value">{{ option.text }}</option>
+            </select>
+          </div>
+          <input type="hidden" v-model="formData.id" />
+          <button id="btnSimpan" type="submit" :disabled="isUploading">
+            {{ isUploading ? 'Menyimpan...' : 'Simpan' }}
+          </button>
+          <button type="button" @click="closeModal">Batal</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tabel Artikel dengan Scroll -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Gambar</th>
+            <th>Judul</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, index) in artikel" :key="row.id">
+            <td class="center-text">{{ row.id }}</td>
+            <td class="center-text">
+              <img v-if="row.gambar"
+                   :src="'/webperaktikum2/ci4/public/gambar/' + row.gambar"
+                   alt="Gambar Artikel"
+                   class="table-image" />
+              <span v-else class="no-image">No Image</span>
+            </td>
+            <td>{{ row.judul }}</td>
+            <td>{{ statusText(row.status) }}</td>
+            <td class="center-text">
+              <a href="#" @click.prevent="edit(row)">Edit</a>
+              <a href="#" @click.prevent="hapus(index, row.id)">Hapus</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Connection Status -->
+  <script>
+    console.log('🚀 Vue.js + CodeIgniter App Loading...')
+    console.log('📍 Current URL:', window.location.href)
+    console.log('🔧 If you have connection issues, open: startup-check.html')
+  </script>
+
+  <!-- Hubungkan dengan Vue App -->
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
